@@ -4,3 +4,4 @@
 [submodule "ogybot_discord"]
 	path = ogybot_discord
 	url = https://github.com/ezlixp/ogybot-discord.git
+	branch = develop

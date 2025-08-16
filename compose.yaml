@@ -1,0 +1,37 @@
+services:
+    proxy:
+        image: traefik:v3.4
+        command: --providers.docker
+        ports:
+            - 80:80
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+
+    bot:
+        build:
+            context: ./
+            target: bot-final
+        image: ezlixp/ogybot:latest
+        restart: on-failure:5
+        depends_on:
+            backend:
+                condition: service_healthy
+
+    backend:
+        build:
+            context: ./
+            target: backend-final
+        image: ezlixp/ico-server:latest
+        restart: on-failure:5
+        ports:
+            - 3000:3000
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:3000/healthz"] # adjust endpoint
+            interval: 300s
+            timeout: 3s
+            retries: 5
+            start_period: 5s
+        labels:
+            traefik.http.routers.client.rule: Host(`localhost`)
+            traefik.http.services.client.loadbalancer.server.port: 3000
+
