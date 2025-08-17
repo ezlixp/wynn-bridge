@@ -1,7 +1,7 @@
-[submodule "ico_server"]
-	path = ico_server
-	url = https://github.com/ezlixp/ico_server.git
-[submodule "ogybot_discord"]
-	path = ogybot_discord
+[submodule "ico-server"]
+	path = ico-server
+	url = https://github.com/ezlixp/ico-server.git
+[submodule "ogybot-discord"]
+	path = ogybot-discord
 	url = https://github.com/ezlixp/ogybot-discord.git
 	branch = develop
