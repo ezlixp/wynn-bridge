@@ -11,7 +11,7 @@ services:
         build:
             context: ./
             target: bot-final
-        image: ezlixp/ogybot:latest
+        image: ezlixp/ogybot2:latest
         restart: on-failure:5
         depends_on:
             backend:

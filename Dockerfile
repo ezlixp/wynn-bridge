@@ -1,25 +1,40 @@
-FROM node:22 AS base
+FROM node:22-slim AS base
 WORKDIR /usr/local/app
 
-FROM base AS backend-base
-COPY ico_server/package.json ico_server/package-lock.json ./
-COPY ico_server/.env.production ./
-COPY ico_server/jest.config.json ico_server/tsconfig.json ./
-COPY ico_server/src ./src
-COPY ico_server/test ./test
-RUN npm install
+FROM base AS backend-deps
+COPY ico_server/package*.json ./
+RUN npm ci
 
-FROM backend-base AS backend-dev
+# TODO: use env injection
+FROM backend-deps AS backend-build
+COPY ico_server/tsconfig.json ./
+COPY ico_server/.env.* ./
+COPY ico_server/src ./src
+RUN npx tsc
+
+FROM backend-build AS backend-test
+COPY ico_server/jest.config.json ./
+COPY ico_server/test ./test
+RUN npm test
+
+FROM base AS backend-prod-deps
+COPY ico_server/package*.json ./
+RUN npm ci --omit=dev && npm cache clean --force
+
+
+FROM backend-build AS backend-dev
 CMD ["npm", "run", "dev"]
 
-FROM backend-dev AS test
-RUN npm run test
-
-FROM backend-base AS backend-final
+FROM node:22-slim AS backend-final
+WORKDIR /usr/local/app
 ENV NODE_ENV=production
-RUN npm ci --production && npm cache clean --force
+
+COPY --from=backend-prod-deps /usr/local/app/node_modules ./node_modules
+COPY --from=backend-build /usr/local/app/dist/src ./dist
+COPY ico_server/.env.production ./
+
 EXPOSE 3000
-CMD ["npx", "tsx", "src/index.ts"]
+CMD ["node", "dist/index.js"]
 
 FROM mcr.microsoft.com/dotnet/runtime:8.0 AS bot-runtime
 WORKDIR /usr/local/bot
