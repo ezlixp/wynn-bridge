@@ -1,6 +1,7 @@
 [submodule "ico-server"]
 	path = ico-server
 	url = https://github.com/ezlixp/ico-server.git
+	branch = master
 [submodule "ogybot-discord"]
 	path = ogybot-discord
 	url = https://github.com/ezlixp/ogybot-discord.git
