@@ -1,6 +1,20 @@
 services:
+  mongodb:
+    image: "mongo:latest"
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    command: ["mongod", "--quiet", "--logpath", "/dev/null"]
+
   proxy:
-    image: traefik:v3.4
+    image: traefik:latest
     command: --providers.docker
     ports:
       - 80:80
@@ -13,6 +27,10 @@ services:
       target: bot-final
     image: ezlixp/ogybot2:latest
     restart: on-failure:5
+    develop:
+      watch:
+        - path: ./ogybot-discord
+          action: rebuild
     depends_on:
       backend:
         condition: service_healthy
@@ -20,11 +38,17 @@ services:
   backend:
     build:
       context: ./ico-server
-      target: backend-final
+      target: backend-dev
     image: ezlixp/ico-server:latest
+    env_file: ./ico-server/.env.development
     restart: on-failure:5
+    depends_on:
+      mongodb:
+        condition: service_healthy
     ports:
       - 3000:3000
+    environment:
+      - NODE_ENV=development
     healthcheck:
       test:
         [
@@ -37,6 +61,14 @@ services:
       timeout: 3s
       retries: 5
       start_period: 10s
+    develop:
+      watch:
+        - path: ./ico-server/src
+          target: /usr/local/app/src
+          action: sync
     labels:
-      traefik.http.routers.backend.rule: Host(`${HOST_NAME}`)
+      traefik.http.routers.backend.rule: Host(`localhost`)
       traefik.http.services.backend.loadbalancer.server.port: 3000
+
+volumes:
+  mongo-data:
