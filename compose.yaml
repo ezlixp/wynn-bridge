@@ -22,7 +22,6 @@ services:
     environment:
       ME_CONFIG_MONGODB_SERVER: mongodb
       ME_CONFIG_BASICAUTH: "false"
-
   proxy:
     image: traefik:latest
     command: --providers.docker
