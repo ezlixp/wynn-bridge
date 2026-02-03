@@ -18,10 +18,13 @@ services:
       mongodb:
         condition: service_healthy
     ports:
-      - "8081:8081"
+      - :8081
     environment:
       ME_CONFIG_MONGODB_SERVER: mongodb
       ME_CONFIG_BASICAUTH: "false"
+    labels:
+      traefik.http.routers.mongo-express.rule: Host(`localhost`)
+      traefik.http.services.mongo-express.loadbalancer.server.port: 8081
   proxy:
     image: traefik:latest
     command: --providers.docker
@@ -55,7 +58,7 @@ services:
       mongodb:
         condition: service_healthy
     ports:
-      - 3000:3000
+      - :3000
     environment:
       - NODE_ENV=development
     healthcheck:
@@ -64,7 +67,7 @@ services:
           "CMD",
           "node",
           "-e",
-          "require('http').get('http://localhost:3000/healthz', res => res.statusCode === 200 ? process.exit(0) : process.exit(1)).on('error', () => process.exit(1))",
+          "require('http').get('http://backend:3000/api/v3/healthz', res => res.statusCode === 200 ? process.exit(0) : process.exit(1)).on('error', () => process.exit(1))",
         ]
       interval: 10s
       timeout: 3s
@@ -76,7 +79,7 @@ services:
           target: /usr/local/app/src
           action: sync
     labels:
-      traefik.http.routers.backend.rule: Host(`localhost`)
+      traefik.http.routers.backend.rule: Host(`localhost`) && PathPrefix(`/api`)
       traefik.http.services.backend.loadbalancer.server.port: 3000
 
 volumes:
