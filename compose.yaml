@@ -62,11 +62,8 @@ services:
       timeout: 3s
       retries: 5
       start_period: 10s
-    develop:
-      watch:
-        - path: ./ico-server/src
-          target: /usr/local/app/src
-          action: sync
+    volumes:
+      - ./ico-server/src:/usr/local/app/src
     labels:
       traefik.http.routers.backend.rule: Host(`localhost`) && (PathPrefix(`/api`) || PathPrefix(`/socket.io`))
       traefik.http.services.backend.loadbalancer.server.port: 3000
