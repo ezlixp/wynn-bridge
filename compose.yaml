@@ -30,7 +30,7 @@ services:
       context: ./ogybot-discord
       target: bot-final
     image: ezlixp/ogybot2:latest
-    restart: always
+    restart: unless-stopped
     develop:
       watch:
         - path: ./ogybot-discord
