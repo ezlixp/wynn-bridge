@@ -25,19 +25,6 @@ services:
       traefik.http.routers.mongo-express.rule: Host(`localhost`)
       traefik.http.services.mongo-express.loadbalancer.server.port: 8081
 
-  bot:
-    build:
-      context: ./ogybot-discord
-      target: bot-final
-    image: ezlixp/ogybot2:latest
-    restart: unless-stopped
-    develop:
-      watch:
-        - path: ./ogybot-discord
-          action: rebuild
-    depends_on:
-      backend:
-        condition: service_healthy
   backend:
     build:
       context: ./ico-server
@@ -63,10 +50,22 @@ services:
       retries: 5
       start_period: 10s
     volumes:
-      - ./ico-server/src:/usr/local/app/src
+      - ./ico-server:/usr/local/backend
     labels:
       traefik.http.routers.backend.rule: Host(`localhost`) && (PathPrefix(`/api`) || PathPrefix(`/socket.io`))
       traefik.http.services.backend.loadbalancer.server.port: 3000
+
+  bot:
+    build:
+      context: ./ogybot-discord
+      target: bot-dev
+    image: ezlixp/ogybot2:latest
+    restart: unless-stopped
+    volumes:
+      - ./ogybot-discord:/usr/local/bot
+    depends_on:
+      backend:
+        condition: service_healthy
   proxy:
     image: traefik:latest
     command: --providers.docker
