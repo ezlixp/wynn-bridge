@@ -61,8 +61,11 @@ services:
       target: bot-dev
     image: ezlixp/ogybot2:latest
     restart: unless-stopped
-    volumes:
-      - ./ogybot-discord:/usr/local/bot
+    develop:
+      watch:
+        - path: ./ogybot-discord
+          target: /usr/local/bot
+          action: sync
     depends_on:
       backend:
         condition: service_healthy
