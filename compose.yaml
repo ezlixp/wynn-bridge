@@ -30,7 +30,7 @@ services:
       context: ./ico-server
       target: backend-dev
     image: ezlixp/ico-server:latest
-    env_file: ./ico-server/.env.development
+    env_file: ./ico-server/.env.dockerdev
     restart: on-failure:5
     depends_on:
       mongodb:
