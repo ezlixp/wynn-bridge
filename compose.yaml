@@ -61,6 +61,8 @@ services:
       target: bot-dev
     image: ezlixp/ogybot2:latest
     restart: unless-stopped
+    ports:
+      - 5000:5000
     develop:
       watch:
         - path: ./ogybot-discord

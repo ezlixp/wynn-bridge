@@ -10,6 +10,22 @@
             "args": ["${relativeFile}", "--runInBand", "--watchAll=false"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Debug .NET Core in Docker",
+            "type": "coreclr",
+            "request": "attach",
+            "processId": "${command:pickRemoteProcess}",
+            "sourceFileMap": {
+                "/usr/local/bot": "${workspaceRoot}/ogybot-discord"
+            },
+            "pipeTransport": {
+                "pipeCwd": "${workspaceRoot}",
+                "pipeProgram": "docker",
+                "pipeArgs": ["exec", "-i", "wynn-bridge-bot-1"],
+                "quoteArgs": false,
+                "debuggerPath": "/vsdbg/vsdbg"
+            }
         }
     ]
 }
