@@ -29,7 +29,7 @@ services:
     build:
       context: ./ico-server
       target: backend-dev
-    image: ezlixp/ico-server:latest
+    image: ezlixp/wynn-bridge:backend-dev
     env_file: ./ico-server/.env.dockerdev
     restart: on-failure:5
     depends_on:
@@ -59,7 +59,7 @@ services:
     build:
       context: ./ogybot-discord
       target: bot-dev
-    image: ezlixp/ogybot2:latest
+    image: ezlixp/wynn-bridge:bot-dev
     restart: unless-stopped
     ports:
       - 5000:5000
