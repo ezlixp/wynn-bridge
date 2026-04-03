@@ -10,8 +10,9 @@ All pull requests are welcome and heavily appreciated, however please make sure 
 
 ## Initial Setup
 
-To set up the workspace, simply clone this repository. Then run `git submodule update`, and populate appsettings.json in ogybot-discord and .env.dockerdev in ico-server.
+To set up the workspace, simply clone this repository. Then run `git submodule update`, and populate .env with the format of appsettings.json in ogybot-discord/ogybot.Bot and .env.dockerdev in ico-server.
 
 ## Testing
 
 To test your changes, use the provided unit tests, or run the project using `docker compose up --build`.
+
