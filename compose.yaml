@@ -61,10 +61,6 @@ services:
       target: bot-dev
     image: ezlixp/wynn-bridge:bot-dev
     restart: unless-stopped
-    ports:
-      - 5000:5000
-    # volumes:
-    #   - ./ogybot-discord:/usr/local/bot
     develop:
       watch:
         - path: ./ogybot-discord
