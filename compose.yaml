@@ -61,6 +61,7 @@ services:
       target: bot-dev
     image: ezlixp/wynn-bridge:bot-dev
     restart: unless-stopped
+    # for some reason this causes issues sometimes with appsettings not working.
     develop:
       watch:
         - path: ./ogybot-discord
