@@ -6,12 +6,12 @@ services:
     ports:
       - "27017:27017"
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
       interval: 3s
       timeout: 5s
       retries: 3
       start_period: 2s
-    command: ["mongod", "--quiet", "--logpath", "/dev/null"]
+    command: [ "mongod", "--quiet", "--logpath", "/dev/null" ]
     # command: ["mongod", "--verbose"]
   mongo-express:
     image: mongo-express:latest
@@ -32,6 +32,8 @@ services:
     image: ezlixp/wynn-bridge:backend-dev
     env_file: ./ico-server/.env.dockerdev
     restart: on-failure:5
+    ports:
+      - 9229:9229
     depends_on:
       mongodb:
         condition: service_healthy
@@ -43,7 +45,9 @@ services:
           "CMD",
           "node",
           "-e",
-          "require('http').get('http://backend:3000/api/v3/healthz', res => res.statusCode === 200 ? process.exit(0) : process.exit(1)).on('error', () => process.exit(1))",
+          "require('http').get('http://backend:3000/api/v3/healthz', res =>
+            res.statusCode === 200 ? process.exit(0) :
+            process.exit(1)).on('error', () => process.exit(1))",
         ]
       interval: 3s
       timeout: 3s
@@ -51,6 +55,7 @@ services:
       start_period: 2s
     volumes:
       - ./ico-server:/usr/local/backend
+      - /usr/local/backend/node_modules
     labels:
       traefik.http.routers.backend.rule: Host(`localhost`) && (PathPrefix(`/api`) || PathPrefix(`/socket.io`))
       traefik.http.services.backend.loadbalancer.server.port: 3000

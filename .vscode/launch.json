@@ -26,6 +26,17 @@
                 "quoteArgs": false,
                 "debuggerPath": "/vsdbg/vsdbg"
             }
+        },
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "Docker: Attach to Node",
+            "address": "localhost",
+            "port": 9229,
+            "localRoot": "${workspaceFolder}/ico-server",
+            "remoteRoot": "/usr/local/backend",
+            "restart": true,
+            "skipFiles": ["<node_internals>/**"]
         }
     ]
 }
